@@ -1,0 +1,34 @@
+only download full line
+speedtest-cli | awk '{ if($1 ~ /Download/)  {print $0} }'
+speedtest-cli | awk '{ if($1 ~ /Download/)  {print $2, $3} }'
+
+
+
+speedtest-cli | awk '{ if($1 ~ /Upload/)  {print $0} }'
+speedtest-cli | awk '{ if($1 ~ /Upload/)  {print $2, $3} }'
+
+
+beide
+speedtest-cli | awk '{  if($1 ~ /Download/)  {print $0}; if($1 ~ /Upload/)  {print $0} }'
+
+alternatief 
+speedtest-cli --simple
+speedtest-cli --csv
+
+
+
+beide >> log seperate
+speedtest-cli | awk '{  if($1 ~ /Download/)  {print $2 >> "/home/bo/mygit/networkconnecttest/speed/tempdown.log" }; if($1 ~ /Upload/)  {print $2 >> "/home/bo/mygit/networkconnecttest/speed/tempup.log" } }'
+
+time stamp
+
+speedtest-cli | awk -v ts="$(date '+%Y-%m-%dT%H:%M:%S')"  '{  if($1 ~ /Download/)  {print ts "," $2 >> "/home/bo/mygit/networkconnecttest/speed/tempdown.log" }; if($1 ~ /Upload/)  {print ts "," $2 >> "/home/bo/mygit/networkconnecttest/speed/tempup.log" } }'
+
+
+single file
+speedtest-cli | awk -v ts="$(date '+%Y-%m-%dT%H:%M:%S')" '
+  /Download/ { down = $2 }
+  /Upload/   { up = $2 }
+  END        { print ts "," down "," up >> "/home/bo/mygit/networkconnecttest/speed/speedtest.log" }
+'
+
